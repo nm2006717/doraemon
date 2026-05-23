@@ -2,5 +2,5 @@
 export default {
   content: ['./index.html', './src/**/*.{vue,js,ts}'],
   theme: { extend: {} },
-  plugins: []
+  plugins: [require('@tailwindcss/typography')]
 }
