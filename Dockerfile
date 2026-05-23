@@ -19,6 +19,7 @@ FROM alpine:3.20
 
 WORKDIR /app
 COPY --from=builder /app/doraemon .
+COPY --from=builder /app/README.md .
 RUN mkdir -p data/files
 
 ENTRYPOINT ["./doraemon"]

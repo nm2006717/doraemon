@@ -9,7 +9,8 @@ const router = createRouter({
     { path: '/', name: 'dashboard', component: () => import('../views/DashboardView.vue') },
     { path: '/entries', name: 'entries', component: () => import('../views/EntryListView.vue') },
     { path: '/entries/new', name: 'entry-create', component: () => import('../views/EntryCreateView.vue') },
-    { path: '/entries/:id', name: 'entry-detail', component: () => import('../views/EntryDetailView.vue') }
+    { path: '/entries/:id', name: 'entry-detail', component: () => import('../views/EntryDetailView.vue') },
+    { path: '/about', name: 'about', component: () => import('../views/AboutView.vue') }
   ]
 })
 

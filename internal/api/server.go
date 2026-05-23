@@ -27,6 +27,7 @@ func New(s *store.Store, addr string, jwtSecret []byte, webFS fs.FS) *Server {
 }
 
 func (s *Server) registerRoutes(webFS fs.FS) {
+	s.mux.HandleFunc("GET /api/readme", s.handleReadme)
 	s.mux.HandleFunc("GET /api/status", s.handleStatus)
 	s.mux.HandleFunc("POST /api/setup", s.handleSetup)
 	s.mux.HandleFunc("POST /api/login", s.handleLogin)
