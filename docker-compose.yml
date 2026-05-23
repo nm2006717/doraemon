@@ -1,0 +1,9 @@
+services:
+  doraemon:
+    build: .
+    stdin_open: true
+    volumes:
+      - doraemon-data:/app/data
+
+volumes:
+  doraemon-data:
