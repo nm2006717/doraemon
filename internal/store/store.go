@@ -28,6 +28,9 @@ func New(dataDir string) (*Store, error) {
 		return nil, fmt.Errorf("ping database: %w", err)
 	}
 
+	db.Exec("PRAGMA journal_mode=WAL")
+	db.Exec("PRAGMA busy_timeout=5000")
+
 	s := &Store{db: db}
 	if err := s.migrate(); err != nil {
 		return nil, fmt.Errorf("migrate: %w", err)
@@ -73,6 +76,13 @@ func (s *Store) migrate() error {
 			INSERT INTO entries_fts(rowid, title, content, tags)
 			VALUES (new.id, new.title, new.content, new.tags);
 		END;
+
+		CREATE TABLE IF NOT EXISTS users (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			username TEXT NOT NULL UNIQUE,
+			password_hash TEXT NOT NULL,
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+		);
 	`)
 	return err
 }
