@@ -11,6 +11,13 @@ data/
 .vscode/
 *.swp
 
+# Claude Code (platform-specific paths)
+.mcp.json
+.claude/
+
+# Scripts with local paths
+scripts/
+
 # OS
 .DS_Store
 Thumbs.db

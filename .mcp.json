@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "doraemon": {
-      "command": "C:\\Users\\frankfoo\\projects\\code\\go\\doraemon\\doraemon.exe",
-      "args": []
-    }
-  }
-}
