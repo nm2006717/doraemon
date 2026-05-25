@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/rand"
 	"encoding/hex"
+	"flag"
 	"fmt"
 	"io/fs"
 	"log"
@@ -18,7 +19,10 @@ import (
 )
 
 func main() {
-	fmt.Println("Doraemon starting...")
+	mcpOnly := flag.Bool("mcp-only", false, "Run MCP stdio server only")
+	httpOnly := flag.Bool("http-only", false, "Run HTTP admin panel only")
+	httpPort := flag.String("http-port", "18080", "HTTP server port")
+	flag.Parse()
 
 	s, err := store.New("data")
 	if err != nil {
@@ -26,11 +30,17 @@ func main() {
 	}
 	defer s.Close()
 
-	addr := os.Getenv("DORAEMON_HTTP_PORT")
-	if addr == "" {
-		addr = ":8080"
-	} else {
-		addr = ":" + addr
+	if *mcpOnly {
+		srv := mcpserver.NewServer(s)
+		if err := server.ServeStdio(srv); err != nil {
+			log.Fatalf("MCP server error: %v", err)
+		}
+		return
+	}
+
+	addr := ":" + *httpPort
+	if envPort := os.Getenv("DORAEMON_HTTP_PORT"); envPort != "" {
+		addr = ":" + envPort
 	}
 
 	jwtSecret := getJWTSecret()
@@ -48,13 +58,15 @@ func main() {
 		}
 	}()
 
-	srv := mcpserver.NewServer(s)
-	go func() {
-		fmt.Println("MCP server serving via stdio...")
-		if err := server.ServeStdio(srv); err != nil {
-			log.Printf("MCP server stopped: %v", err)
-		}
-	}()
+	if !*httpOnly {
+		srv := mcpserver.NewServer(s)
+		go func() {
+			fmt.Println("MCP server serving via stdio...")
+			if err := server.ServeStdio(srv); err != nil {
+				log.Printf("MCP server stopped: %v", err)
+			}
+		}()
+	}
 
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
